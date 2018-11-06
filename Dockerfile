@@ -2,12 +2,16 @@ FROM camunda/camunda-bpm-platform
 
 USER root
 
+COPY ./*.sh /
+RUN chmod +x /wait_for_postgres.sh /entrypoint.sh
+
 RUN rm -rf /camunda/webapps/camunda-invoice /camunda/webapps/examples
 
 COPY --chown=camunda:camunda ./camunda-latera-1.0.jar /camunda/lib/
 COPY --chown=camunda:camunda ./demo_processes/        /camunda/webapps/
 
 RUN apk add wget -fy
+RUN apk add --no-cache postgresql-client -fy
 
 RUN cd /camunda/lib && \
   wget http://central.maven.org/maven2/org/codehaus/groovy/modules/http-builder/http-builder/0.7.1/http-builder-0.7.1.jar && \
@@ -32,3 +36,8 @@ RUN chown camunda:camunda /camunda/lib/*.jar
 RUN sed -i 's/<!-- <filter>/<filter>/' /camunda/webapps/engine-rest/WEB-INF/web.xml && sed -i 's/<\/filter-mapping> -->/<\/filter-mapping>/' /camunda/webapps/engine-rest/WEB-INF/web.xml
 
 USER camunda
+
+CMD ["/entrypoint.sh"]
+
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["./camunda.sh"]
