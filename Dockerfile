@@ -1,4 +1,4 @@
-FROM camunda/camunda-bpm-platform
+FROM camunda/camunda-bpm-platform:7.8.0
 
 USER root
 
