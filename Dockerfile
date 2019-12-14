@@ -3,7 +3,7 @@ USER root
 
 RUN rm -rf /camunda/webapps/camunda-invoice /camunda/webapps/examples
 
-COPY --chown=camunda:camunda ./camunda-latera-1.1.jar /camunda/lib/
+COPY --chown=camunda:camunda ./camunda-latera-1.2.jar /camunda/lib/
 COPY --chown=camunda:camunda ./demo_processes/        /camunda/webapps/
 
 RUN apk add wget -fy
@@ -26,7 +26,14 @@ RUN cd /camunda/lib && \
   wget http://central.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar && \
   wget http://central.maven.org/maven2/io/github/http-builder-ng/http-builder-ng-core/1.0.3/http-builder-ng-core-1.0.3.jar && \
   wget http://central.maven.org/maven2/javax/mail/mail/1.4.7/mail-1.4.7.jar && \
-  wget https://repo.maven.apache.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar
+  wget https://repo.maven.apache.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar && \
+  wget https://repo.maven.apache.org/maven2/io/minio/minio/6.0.8/minio-6.0.8.jar && \
+  wget https://repo.maven.apache.org/maven2/com/google/http-client/google-http-client-xml/1.24.1/google-http-client-xml-1.24.1.jar && \
+  wget https://repo.maven.apache.org/maven2/com/google/http-client/google-http-client/1.24.1/google-http-client-1.24.1.jar && \
+  wget https://repo.maven.apache.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2.jar && \
+  wget https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/3.13.1/okhttp-3.13.1.jar && \
+  wget https://repo.maven.apache.org/maven2/com/google/guava/guava/25.1-jre/guava-25.1-jre.jar && \
+  wget https://repo.maven.apache.org/maven2/xpp3/xpp3/1.1.4c/xpp3-1.1.4c.jar
 
 RUN chown camunda:camunda /camunda/lib/*.jar
 RUN sed -i 's/<!-- <filter>/<filter>/' /camunda/webapps/engine-rest/WEB-INF/web.xml && sed -i 's/<\/filter-mapping> -->/<\/filter-mapping>/' /camunda/webapps/engine-rest/WEB-INF/web.xml
