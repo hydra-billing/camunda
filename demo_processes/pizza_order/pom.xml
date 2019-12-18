@@ -14,7 +14,6 @@
     <camunda.version>7.9.0</camunda.version>
     <camunda-ext.version>master-SNAPSHOT</camunda-ext.version>
     <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
-    <http-builder-ng.version>1.0.3</http-builder-ng.version>
     <maven-war-plugin.version>2.3</maven-war-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
@@ -64,12 +63,6 @@
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
       <version>${groovy.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.http-builder-ng</groupId>
-      <artifactId>http-builder-ng-core</artifactId>
-      <version>${http-builder-ng.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

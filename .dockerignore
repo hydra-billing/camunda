@@ -1,1 +1,6 @@
 .git
+target
+docker_images
+*.tar
+cache
+.cache
