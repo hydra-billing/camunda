@@ -21,10 +21,20 @@ RUN cd /dependencies/ && \
   mvn dependency:copy-dependencies -U && \
   chown camunda:camunda -R ./*
 
+# Build seed application
+COPY seed /seed
+RUN cd /seed && \
+    ./build.sh && \
+    chown camunda:camunda -R ./*
+
 # Build demo processes
 COPY demo_processes /demo_processes
 RUN cd /demo_processes && \
     find ./ -type d -maxdepth 1 -mindepth 1 -exec bash -c "cd {} && ./build.sh && chown camunda:camunda -R ./*" ';'
+
+#Get demo processes list
+RUN cd /demo_processes && \
+    find ./ -type d -maxdepth 1 -mindepth 1 -exec bash -c "cd {} && echo \$(basename \$(pwd))" ';' > /demo_processes/list
 
 
 FROM base
@@ -32,7 +42,9 @@ RUN cd /camunda/lib && \
     rm groovy-all-2.4.13.jar && \
     rm mail-1.4.1.jar
 COPY --from=build /dependencies/*.jar /camunda/lib/
+COPY --from=build /seed/target/*.war /camunda/webapps/
 COPY --from=build /demo_processes/*/target/*.war /camunda/webapps/
+COPY --from=build /demo_processes/list /camunda/demo/war.lst
 
 RUN sed -i 's/<!-- <filter>/<filter>/' /camunda/webapps/engine-rest/WEB-INF/web.xml && sed -i 's/<\/filter-mapping> -->/<\/filter-mapping>/' /camunda/webapps/engine-rest/WEB-INF/web.xml
 

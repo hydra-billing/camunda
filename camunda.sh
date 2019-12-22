@@ -110,4 +110,20 @@ if [ -n "${WAIT_FOR}" ]; then
     CMD="wait-for-it.sh ${WAIT_FOR} -s -t ${WAIT_FOR_TIMEOUT} -- ${CMD}"
 fi
 
+export DB_SEED="${DB_SEED:-${BPM_DB_SEED:-true}}"
+
+export ADMIN_USERNAME="${ADMIN_USERNAME:-${BPM_USER:-user}}"
+export ADMIN_PASSWORD="${ADMIN_PASSWORD:-${BPM_PASSWORD:-changeme}}"
+export ADMIN_EMAIL="${ADMIN_EMAIL:-${BPM_EMAIL:-${HOMS_USER:-user@example.com}}}"
+export ADMIN_FIRST_NAME="${ADMIN_FIRST_NAME:-Super}"
+export ADMIN_LAST_NAME="${ADMIN_LAST_NAME:-Admin}"
+
+if [[ "$DB_SEED" != "true" ]]; then
+  rm -rf /camunda/webapps/seed*
+
+  if [[ -f "/camunda/demo/war.lst" ]]; then
+    cat /camunda/demo/war.lst | xargs -I {} bash -c "rm -rf /camunda/webapps/{}*"
+  fi
+fi
+
 exec ${CMD}
