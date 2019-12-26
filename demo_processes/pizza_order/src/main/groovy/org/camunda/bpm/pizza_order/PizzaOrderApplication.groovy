@@ -14,17 +14,27 @@ class PizzaOrderApplication extends ServletProcessApplication {
     return new ExecutionListener() {
       void notify(DelegateExecution execution) {
         new EventLogging().notify(execution)
-        if (execution.getEventName().equals(ExecutionListener.EVENTNAME_START) && (execution.getCurrentActivityName() != null )) {
-          new SimpleLogger(execution).info(
-                  String.format(
-                          "\n------------------------------------------------------------------------\n%s - %s",
-                          execution.hasVariable("homsOrderCode") ? execution.getVariable("homsOrderCode") : execution.getProcessInstanceId(),
-                          execution.getCurrentActivityName()))
+
+        String eventName    = execution.getEventName()
+        String activityName = execution.getCurrentActivityName()
+
+        if (eventName == ExecutionListener.EVENTNAME_START && activityName != null) {
+          new SimpleLogger(execution).info(getLogLine(execution))
         }
-        if (execution.getEventName().equals(ExecutionListener.EVENTNAME_END)) {
+
+        if (eventName == ExecutionListener.EVENTNAME_END) {
           new AutoSaveOrderData().notify(execution)
         }
       }
     }
+  }
+
+  String getLogLine(DelegateExecution execution) {
+    return String.format(
+      "\n%s\n%s - %s",
+      '-' * 72,
+      execution.getVariable('homsOrderCode') ?: execution.getProcessInstanceId(),
+      execution.getCurrentActivityName()
+    )
   }
 }

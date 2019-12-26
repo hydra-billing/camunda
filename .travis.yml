@@ -7,16 +7,13 @@ services:
 - docker
 env:
   global:
-    - secure: "RJ7Q53k+m23qYOLgTR1MFQNcxjxq+HyB4rAMGGpqnvi5eYo18NLMv24JXx5CWCbgTU2vNPD4lUnRPKi6LAUwY8tbqufCOiL+GfS3cupsWiGAqHvtvM75hLZLqRA9Yx+PGlHiG7dm/Lph1f83k9vWFltK/Mnm4EQrYlkQM8oZtCBBtk9OKWANZcInv4KFunFpyegY1pnOxPisdFbP7iSPS/1jp7U2qTHaoVdtv6aRxWMR7dBBf+aU+A37N9y+KalQcZcu/yUbJIaReXD/IsHJojuCU7j+msbF0nJEnbJOOK7pKOe2cqOH4tcBm+vGgqVhIl6VGr182wk8SwMiUWDyVH81alF/suNcdNBlsMuHm2sfqvxreADE3kfiaxmgNFdA6vGH4c8YyzGvdDXAWNplWbWL4PEzJ0oCbdGUjqV/EZnnqPGsaFpnKG/SIIDlPoFSgg9XjjAZK7vqAJQZf3nuNPq9m3yEm62lu219oXUwfwhEV8B4jFMlmdnEoBxHJEPkMaZZmNI07OMc2pKryYD0MkMKZMCG4BRVmaL9jAbB6K1yVO+jU2UUKfury53ZalwDuFMnTV1s4DcSh03xkU4dkvwFI4NJPG77EqI/t6iM5piJgd41oHVxBEPVo1sFmIsgoy+TfK8TF/stpc2LQPCoCwCu8SBZrApscXTbWCqtO18=" # DOCKERHUB_USER
-    - secure: "t6XVIOV/JxwjCLgyoKB42F9cI4ukioNlyvx7paaeTn7b3aB2BJGfAwL4NcHCVDS55wEoJ+mi2I8NzBfvKHi+nfWPdjUQxLWRomXrzeBkSanLJ4srGzBcc7lefYJ+yFTCKExbQNVKIa0QKZiH16yqcyQkycelIR30Mv+iUboNLBEDmdG+vJJ+rITMmTux00lVWbUIYi7cIn1IJmqiE/dpv0AN6oLkw5EPZ6TR/d9i3c5LYuCZOmqgQRqJj8Njvb+YGlWA71L+bu3i+BVEsqi4wdrldUr7nYvcfa6ysA7vkwrbmVqI/mtqG2m7WVBS0FnPhki728NwjsLbcqMR0mcfx6uoHOeQwyYzUfv8E4xCZCcH2nXqHavIUVq6LChxlBX6efWURI08c3kokWMWmmD0iJVmt/YbTrF8XG1Xk2YKLG+AfYQxbKGjPj9MNTwg4QvSPCPJanPDZ/7LpeC4ReP1YxXsNlhYx5Z+ABFEDkQYtXav3Dr4VKJ7BroFKr2agCmtPpsbyfZEuNqT9Rtjd2yZVb/aA/T/KzXY5mpM7rrSqae/Sei/hMdoJbbVisirnFZsqu/AtYDYA/6tclFollsCpKP0jsRfqhrm3TKIpcoOjQOFWjA6ZPhKHHmB+c5dmQKBsaaLxgfOni/yIgdvB2/XC7/68g664mvOpPvZokYKn3M=" # DOCKERHUB_PASS
-    - secure: "EKXsVU8F1Wp07FK5db2uo9IlM5tJSMnINLPUyX8dzhLN6WevsLu8d5Su2x7UIeVkNQSyhEgqhJdv62XGTL+DPnQER+5GB/e1PHUJIpWOrcGUIUc3medRJjJ9NcMkMxYWtO1iSkg1zZeCSTN0SAQAa8khTGB18fEsFXDrTOf+JcW2xtArgE6Pf81+d3n+oJ68nCSp/hD8LoSOtw6Qsb1NWWWfwdcMdN+q8ivwji6YTO51qNzXsvgg8FbvvVLf+etljCDCRifuuaH0b8CUGN0wsjrJ1lUmB2E4DkGFB6pY+UDt8gQNmYWBwkUxYn6CWCHtb8Fj35L7UqJFtXwZO/gkZMrqG8d3xJwL0b2sWCAPBBQOjmLtE/x1ffTc8jaKQD/fAiy97K58yMOteu+xjq/eEnecWtmTeG2EdyB05OY4NS6JX4j+JSLgmNwDq18aNrfGBeiXJv67BwwvVo+olh3T26nsiU87ujsJMotFIWbkphyckzdGkDV/KRVChP3GHOWQn8kuWIplGl8l8DAmFgwOSsVy94EOjVSHKIS91LC0QPB6my/A/FGn1xPl5P/fS5VwNlGvJatnHUvAgJgtibMsu9iIZ99d0IfGDJIppfoq2B8/+/hp2tebtDa66YGp41jXRH5FnBICsqU7smXd/fZ6oYReI80AFkJhXbD3njgIux0=" #GITHUB_TOKEN
     - REPO=${TRAVIS_REPO_SLUG}
 before_install:
 - docker load -i docker_images/images.tar || true
 before_cache:
 - docker save -o docker_images/images.tar $(docker images -a -q)
 script:
-- docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+- docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
 - docker build -t $REPO:$TRAVIS_JOB_ID -f Dockerfile .
 after_success:
 - ./publish_tag.sh
@@ -29,8 +26,7 @@ deploy:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^(master|[0-9]+.[0-9]+)$ || $TRAVIS_TAG =~ ^([0-9]+.[0-9]+)$ || $VERSION =~ ^([0-9]+.[0-9]+)$
 - provider: releases
-  api_key:
-    secure: "AaaFDibnIg1+Hf55asJUR+BXmooRImsHU/+0rbkSDSTVZuoQ/DLn8xbLveXUK6gKSIWWcpkKFJFhJL+LNYLBXXkI3KNzz7vqhgJc8RQd4aqXSffWpmr2QoqRNGPsAQsGq6FQk6UqZDuzP4iChGwLlRQUoc/DVrP523ifyOJllK65PTkcxL6QZ41thCwuADz2THZFjc2sShdrJbyAdylUg9fxMptqEy7MpbyiGXm3UDdzHYj4nBwX0U6+DXae2EKpae8OrKZ1dnasx85bTvmuGUKmW0kT2GD1AvE7qiWeVcEnOlF6/Z32MgCuUXBV/vIWC/Y0PYzbLu/EU0YJS5e0hdlHtYRM7XxIz5Ox1nFw1SCcBCpsmlrc3JpvCv+vZ5vZQxUc5MIJQfeKCBMLHi+mRBaHYh/GATxGev9GW/qtzwSywzfwJjeLZvUqMoXEwwBFucNv24zHhj45WePxKw9Ts6uc/lawmMvLmj0HRUnvxqt31SGk7aXchhjJzVvFZ4G6FzsfDxY7lEhReBPpdIft6BtxCPyckxiu1Hqwz3MQ5b+XbzpftTW3U1DY+Hoc7GWOREJMbgRCHpd8rLAOFRGc1AYWVRPqtI1zUMf5H4N0zhIlOlZFr0cSu8iB1oMz9FAX/TijD1R35Wa9P7uYgTx625a5/pK/qt8Uuujepu6iGAU="
+  api_key: $GITHUB_TOKEN
   file_glob: true
   file: "target/*.war"
   skip_cleanup: true

@@ -9,7 +9,6 @@ USER camunda
 COPY --chown=camunda:camunda ./camunda.sh /camunda/
 COPY context.xml /camunda/conf/
 
-
 FROM base as build
 USER root
 RUN apk add maven openjdk8 -f
@@ -35,7 +34,6 @@ RUN cd /demo_processes && \
 #Get demo processes list
 RUN cd /demo_processes && \
     find ./ -type d -maxdepth 1 -mindepth 1 -exec bash -c "cd {} && echo \$(basename \$(pwd))" ';' > /demo_processes/list
-
 
 FROM base
 RUN cd /camunda/lib && \

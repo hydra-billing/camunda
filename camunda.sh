@@ -79,7 +79,7 @@ xmlstarlet ed -L \
   /camunda/conf/server.xml
 
 if [[ "$HTTP_PROXY" == "true" ]]; then
-  echo "Configure http listener"
+  echo "Configure proxy http listener"
   xmlstarlet ed -L \
     -u "${XML_PROXY_PORT}" -v "${HTTP_PROXY_HOST}" \
     -u "${XML_PROXY_HOST}" -v "${HTTP_PROXY_PORT}" \
@@ -99,7 +99,8 @@ xmlstarlet ed -L \
 
 CMD="/camunda/bin/catalina.sh"
 if [ "${DEBUG}" = "true" ]; then
-  echo "Enabling debug mode, JPDA accesible under port 8000"
+  echo "Enabling debug mode, JPDA accessible under port 8000"
+
   export JPDA_ADDRESS="0.0.0.0:8000"
   CMD+=" jpda"
 fi
