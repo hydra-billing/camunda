@@ -1,0 +1,37 @@
+sudo: required
+language: minimal
+cache:
+  directories:
+  - docker_images
+services:
+- docker
+env:
+  global:
+    - REPO=${TRAVIS_REPO_SLUG}
+before_install:
+- docker load -i docker_images/images.tar || true
+before_cache:
+- docker save -o docker_images/images.tar $(docker images -a -q)
+script:
+- docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+- docker build -t $REPO:$TRAVIS_JOB_ID -f Dockerfile .
+after_success:
+- ./publish_tag.sh
+deploy:
+- provider: script
+  script: ./deploy.sh
+  skip_cleanup: true
+  on:
+    repo: dolfinus/camunda
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(master|[0-9]+.[0-9]+)$ || $TRAVIS_TAG =~ ^([0-9]+.[0-9]+)$ || $VERSION =~ ^([0-9]+.[0-9]+)$
+- provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: "target/*.war"
+  skip_cleanup: true
+  overwrite: true
+  on:
+    repo: dolfinus/camunda
+    all_branches: true
+    condition: $TRAVIS_TAG =~ ^([0-9]+.[0-9]+)$ || $TRAVIS_BRANCH =~ ^([0-9]+.[0-9]+)$ || $VERSION =~ ^([0-9]+.[0-9]+)$
